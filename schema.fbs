@@ -1,0 +1,17 @@
+namespace SpaceMap;
+
+table SpaceObject {
+  id: int;
+  surface: [SurfacePoint];
+}
+
+table SurfacePoint {
+  latitude: int;
+  longitude: int;
+}
+
+table Space {
+  space_objects: [SpaceObject];
+}
+
+root_type Space;
