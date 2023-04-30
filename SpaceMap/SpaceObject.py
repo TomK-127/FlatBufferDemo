@@ -56,7 +56,14 @@ class SpaceObject(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         return o == 0
 
-def SpaceObjectStart(builder): builder.StartObject(2)
+    # SpaceObject
+    def Distance(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
+        return 0.0
+
+def SpaceObjectStart(builder): builder.StartObject(3)
 def Start(builder):
     return SpaceObjectStart(builder)
 def SpaceObjectAddId(builder, id): builder.PrependInt32Slot(0, id, 0)
@@ -68,6 +75,9 @@ def AddSurface(builder, surface):
 def SpaceObjectStartSurfaceVector(builder, numElems): return builder.StartVector(4, numElems, 4)
 def StartSurfaceVector(builder, numElems):
     return SpaceObjectStartSurfaceVector(builder, numElems)
+def SpaceObjectAddDistance(builder, distance): builder.PrependFloat32Slot(2, distance, 0.0)
+def AddDistance(builder, distance):
+    return SpaceObjectAddDistance(builder, distance)
 def SpaceObjectEnd(builder): return builder.EndObject()
 def End(builder):
     return SpaceObjectEnd(builder)

@@ -28,25 +28,35 @@ class SurfacePoint(object):
     def Latitude(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
-        return 0
+            return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
+        return 0.0
 
     # SurfacePoint
     def Longitude(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
-        return 0
+            return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
+        return 0.0
 
-def SurfacePointStart(builder): builder.StartObject(2)
+    # SurfacePoint
+    def Elevation(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
+        return 0.0
+
+def SurfacePointStart(builder): builder.StartObject(3)
 def Start(builder):
     return SurfacePointStart(builder)
-def SurfacePointAddLatitude(builder, latitude): builder.PrependInt32Slot(0, latitude, 0)
+def SurfacePointAddLatitude(builder, latitude): builder.PrependFloat32Slot(0, latitude, 0.0)
 def AddLatitude(builder, latitude):
     return SurfacePointAddLatitude(builder, latitude)
-def SurfacePointAddLongitude(builder, longitude): builder.PrependInt32Slot(1, longitude, 0)
+def SurfacePointAddLongitude(builder, longitude): builder.PrependFloat32Slot(1, longitude, 0.0)
 def AddLongitude(builder, longitude):
     return SurfacePointAddLongitude(builder, longitude)
+def SurfacePointAddElevation(builder, elevation): builder.PrependFloat32Slot(2, elevation, 0.0)
+def AddElevation(builder, elevation):
+    return SurfacePointAddElevation(builder, elevation)
 def SurfacePointEnd(builder): return builder.EndObject()
 def End(builder):
     return SurfacePointEnd(builder)

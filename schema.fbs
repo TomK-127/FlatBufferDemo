@@ -3,11 +3,13 @@ namespace SpaceMap;
 table SpaceObject {
   id: int;
   surface: [SurfacePoint];
+  distance: float;
 }
 
 table SurfacePoint {
-  latitude: int;
-  longitude: int;
+  latitude: float;
+  longitude: float;
+  elevation: float;
 }
 
 table Space {
