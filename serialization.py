@@ -7,26 +7,25 @@ class Galaxy:
         self.objects = []
         self.numOjbects = 0
 
-    def createObject(self, numPoints):
+    def createObject(self, id, distance, x, y, z):
+        self.numOjbects += 1
+        NewSpaceObjct = SpaceObjct(id, distance, x, y, z)
+        self.objects.append(NewSpaceObjct)
+    def generateObject(self, numPoints):
         # x, y, z = self.split_sphere()
         self.numOjbects += 1
         distance = 45
-        NewSpaceObjct = SpaceObjct(self.numOjbects, distance, numPoints)
+        NewSpaceObjct = SpaceObjct(self.numOjbects, distance, [], [], [])
         self.objects.append(NewSpaceObjct)
-        # import matplotlib.pyplot as plt
-        # # x, y, z = split_sphere()
-        # fig = plt.figure()
-        # ax = fig.add_subplot(projection='3d')
-        # ax.scatter(x, y, z)
-        # plt.show()
-
 
 class SpaceObjct:
-    def __init__(self, objId, distance, num_points):
+    def __init__(self, objId, distance, x, y, z):
         self.objId = objId
         self.distance = distance
-        self.x, self.y, self.z = self.split_sphere()
-        # return self.size
+        if x:
+            self.x, self.y, self.z = x, y, z
+        else:
+            self.x, self.y, self.z = self.split_sphere()
 
     # Generate coordinates for a sphere
     # https://stackoverflow.com/questions/73825731/how-to-generate-points-on-spherical-surface-making-equal-parts
@@ -47,44 +46,43 @@ class SpaceObjct:
         return x.flatten(), y.flatten(), z.flatten()
 
 Gal = Galaxy()
-Gal.createObject(1)
-Gal.createObject(2)
+Gal.generateObject(1)
+Gal.generateObject(2)
+
 
 # builder = flatbuffers.Builder(1024)
 builder = flatbuffers.Builder(0)
 
-# Create some SurfacePoints
-points = []
-for point_id in [1, 2, 3]:
-    SurfacePoint.SurfacePointStart(builder)
-    SurfacePoint.SurfacePointAddLatitude(builder, 1.1)
-    SurfacePoint.SurfacePointAddLongitude(builder, 1.2)
-    SurfacePoint.SurfacePointAddElevation(builder, 1.3)
-    points.append(SurfacePoint.SurfacePointEnd(builder))
-#
-# Create a SpaceObject that contains SurfacePoints
-SpaceObject.SpaceObjectStartSurfaceVector(builder, len(points))
-for point in reversed(points):
-    builder.PrependUOffsetTRelative(point)
-points_vector = builder.EndVector(len(points))
+# Serialize space objects
+space_objects = []
+for spaceObject in Gal.objects:
 
-SpaceObject.SpaceObjectStart(builder)
-SpaceObject.SpaceObjectAddId(builder, 1)
-SpaceObject.SpaceObjectAddSurface(builder, points_vector)
+    # each space object has a vector of surface points
+    points = []
+    for i in range(0, len(spaceObject.x)):
+        SurfacePoint.SurfacePointStart(builder)
+        SurfacePoint.SurfacePointAddLatitude(builder, spaceObject.x[i])
+        SurfacePoint.SurfacePointAddLongitude(builder, spaceObject.y[i])
+        SurfacePoint.SurfacePointAddElevation(builder, spaceObject.z[i])
+        points.append(SurfacePoint.SurfacePointEnd(builder))
 
-SpaceObject.SpaceObjectAddDistance(builder, 1.0)
-spaceObject1 = SpaceObject.SpaceObjectEnd(builder)
+    # Create a SpaceObject that contains SurfacePoints
+    SpaceObject.SpaceObjectStartSurfaceVector(builder, len(points))
+    for point in reversed(points):
+        builder.PrependUOffsetTRelative(point)
+    points_vector = builder.EndVector(len(points))
 
-SpaceObject.SpaceObjectStart(builder)
-SpaceObject.SpaceObjectAddSurface(builder, points_vector)
-SpaceObject.SpaceObjectAddId(builder, 2)
-SpaceObject.SpaceObjectAddDistance(builder, 3.0)
-spaceObject2 = SpaceObject.SpaceObjectEnd(builder)
+    SpaceObject.SpaceObjectStart(builder)
+    SpaceObject.SpaceObjectAddId(builder, spaceObject.objId)
+    SpaceObject.SpaceObjectAddSurface(builder, points_vector)
+    SpaceObject.SpaceObjectAddDistance(builder, spaceObject.distance)
 
-Space.StartSpaceObjectsVector(builder, 2)
-builder.PrependUOffsetTRelative(spaceObject1)
-builder.PrependUOffsetTRelative(spaceObject2)
-spaceObjects = builder.EndVector()
+    space_objects.append(SpaceObject.SpaceObjectEnd(builder))
+
+SpaceObject.SpaceObjectStartSurfaceVector(builder, len(space_objects))
+for spaceObj in reversed(space_objects):
+    builder.PrependUOffsetTRelative(spaceObj)
+spaceObjects = builder.EndVector(len(space_objects))
 
 Space.SpaceStart(builder)
 Space.AddSpaceObjects(builder, spaceObjects)
@@ -102,12 +100,24 @@ with open('space.bin', 'rb') as f:
 
 space_output = Space.Space.GetRootAsSpace(buf, 0)
 
+# Reconstruct space objects
+outputGalaxy = Galaxy()
 for i in range(space_output.SpaceObjectsLength()):
-    print("ID, Distance: ")
-    print(space_output.SpaceObjects(i).Id())
-    print(space_output.SpaceObjects(i).Distance())
+    id = space_output.SpaceObjects(i).Id()
+    distance = space_output.SpaceObjects(i).Distance()
+    lat = []
+    long = []
+    elev = []
     for j in range(space_output.SpaceObjects(i).SurfaceLength()):
-        print("Lat/Long/Elevation: ")
-        print(space_output.SpaceObjects(i).Surface(j).Latitude())
-        print(space_output.SpaceObjects(i).Surface(j).Longitude())
-        print(space_output.SpaceObjects(i).Surface(j).Elevation())
+        lat.append(space_output.SpaceObjects(i).Surface(j).Latitude())
+        long.append(space_output.SpaceObjects(i).Surface(j).Longitude())
+        elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
+    outputGalaxy.createObject(id, distance, lat, long, elev)
+
+# Reconstruct surface points
+import matplotlib.pyplot as plt
+# x, y, z = split_sphere()
+fig = plt.figure()
+ax = fig.add_subplot(projection='3d')
+ax.scatter(outputGalaxy.objects[0].x, outputGalaxy.objects[0].y, outputGalaxy.objects[0].z)
+plt.show()
