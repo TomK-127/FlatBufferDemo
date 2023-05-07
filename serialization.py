@@ -6,9 +6,10 @@ import numpy as np
 
 
 Gal = Galaxy.Galaxy()
+num_objects = 80
 
-Gal.generate_object()
-Gal.generate_object()
+for i in range(0, num_objects):
+    Gal.generate_object()
 
 
 # builder = flatbuffers.Builder(1024)
@@ -75,10 +76,11 @@ for i in range(space_output.SpaceObjectsLength()):
         elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
     outputGalaxy.initialize_object(id, distance, lat, long, elev)
 
+print(f"number of objects: {outputGalaxy.num_objects} ")
 # Reconstruct surface points
 import matplotlib.pyplot as plt
-# x, y, z = split_sphere()
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-ax.scatter(outputGalaxy.objects[0].x, outputGalaxy.objects[0].y, outputGalaxy.objects[0].z)
+for i in range(0, outputGalaxy.num_objects):
+    ax.scatter(outputGalaxy.objects[i].x, outputGalaxy.objects[i].y, outputGalaxy.objects[i].z)
 plt.show()

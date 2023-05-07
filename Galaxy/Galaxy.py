@@ -31,13 +31,21 @@ class SpaceObject:
 
     def generate_object_data(self):
         # Create randomized surface
-        radius = np.random.rand() * 1000.0
-        split_factor = np.random.randint(36, 80)
+        radius = np.random.rand() * 10000.0
+        split_factor = np.random.randint(36, 50)
         horizontal_split = split_factor
         vertical_split = split_factor
         self.x, self.y, self.z = self.split_sphere(radius, horizontal_split, vertical_split)
 
-        self.distance = np.random.rand() * 10000.0
+        self.distance = np.random.rand() * 100000.0
+        phi = np.random.rand() * 360
+        theta = np.random.rand() * 360
+        x_offset = self.distance * (np.cos(phi) * np.cos(theta))
+        y_offset = self.distance * (np.sin(phi) * np.cos(theta))
+        z_offset = self.distance * (np.sin(theta))
+        self.x += x_offset
+        self.y += y_offset
+        self.z += z_offset
 
     def add_surface(self, x, y, z):
         self.x, self.y, self.z = np.array(x), np.array(y), np.array(z)
