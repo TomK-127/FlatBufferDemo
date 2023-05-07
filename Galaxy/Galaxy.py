@@ -1,39 +1,53 @@
 import numpy as np
+import random
 
 
 class Galaxy:
     def __init__(self):
         self.objects = []
-        self.numOjbects = 0
+        self.num_objects = 0
 
-    def initializeObject(self, id, distance, x, y, z):
-        self.numOjbects += 1
-        newSpaceObject = SpaceObject(id, distance)
-        newSpaceObject.addSurface(x, y, z)
-        self.objects.append(newSpaceObject)
+    # create a space object and initialize it based on input parameters
+    def initialize_object(self, obj_id, distance, x, y, z):
+        self.num_objects += 1
+        space_object = SpaceObject(obj_id)
+        space_object.add_surface(x, y, z)
+        space_object.add_distance(distance)
+        self.objects.append(space_object)
 
-    def generateObject(self, numPoints):
-        self.numOjbects += 1
-        distance = 45
-        newSpaceObject = SpaceObject(self.numOjbects, distance)
-        newSpaceObject.generateSurface()
-        self.objects.append(newSpaceObject)
+    # Generate a new random space object
+    def generate_object(self):
+        self.num_objects += 1
+        space_object = SpaceObject(self.num_objects)
+        space_object.generate_object_data()
+        self.objects.append(space_object)
 
 
 class SpaceObject:
-    def __init__(self, objId, distance):
-        self.objId = objId
-        self.distance = distance
+    def __init__(self, obj_id):
+        self.id = obj_id
+        self.x, self.y, self.z = [], [], []
+        self.distance = 0
 
-    def generateSurface(self):
-        self.x, self.y, self.z = self.split_sphere()
+    def generate_object_data(self):
+        # Create randomized surface
+        radius = np.random.rand() * 1000.0
+        split_factor = np.random.randint(36, 80)
+        horizontal_split = split_factor
+        vertical_split = split_factor
+        self.x, self.y, self.z = self.split_sphere(radius, horizontal_split, vertical_split)
 
-    def addSurface(self, x, y, z):
+        self.distance = np.random.rand() * 10000.0
+
+    def add_surface(self, x, y, z):
         self.x, self.y, self.z = np.array(x), np.array(y), np.array(z)
+
+    def add_distance(self, distance):
+        self.distance = distance
 
     # Generate coordinates for a sphere
     # https://stackoverflow.com/questions/73825731/how-to-generate-points-on-spherical-surface-making-equal-parts
-    def split_sphere(self, R=1.0, horizontal_split=36, vertical_split=36, method="equal_angles"):
+    def split_sphere(self, radius, horizontal_split, vertical_split, method="equal_angles"):
         theta = np.linspace(0, 360, horizontal_split + 1)
         if method == "equal_angles":
             phi = np.linspace(0, 180, vertical_split + 1)
@@ -44,7 +58,7 @@ class SpaceObject:
             s = 1 - c ** 2
         else:
             raise (ValueError('method must be "equal_angles" or "equal_area"'))
-        x = R * np.outer(s, np.cos(theta))
-        y = R * np.outer(s, np.sin(theta))
-        z = R * np.outer(c, np.ones(horizontal_split + 1))
+        x = radius * np.outer(s, np.cos(theta))
+        y = radius * np.outer(s, np.sin(theta))
+        z = radius * np.outer(c, np.ones(horizontal_split + 1))
         return x.flatten(), y.flatten(), z.flatten()

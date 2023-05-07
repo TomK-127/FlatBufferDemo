@@ -6,8 +6,9 @@ import numpy as np
 
 
 Gal = Galaxy.Galaxy()
-Gal.generateObject(1)
-Gal.generateObject(2)
+
+Gal.generate_object()
+Gal.generate_object()
 
 
 # builder = flatbuffers.Builder(1024)
@@ -33,7 +34,7 @@ for spaceObject in Gal.objects:
     points_vector = builder.EndVector(len(points))
 
     SpaceObject.SpaceObjectStart(builder)
-    SpaceObject.SpaceObjectAddId(builder, spaceObject.objId)
+    SpaceObject.SpaceObjectAddId(builder, spaceObject.id)
     SpaceObject.SpaceObjectAddSurface(builder, points_vector)
     SpaceObject.SpaceObjectAddDistance(builder, spaceObject.distance)
 
@@ -72,7 +73,7 @@ for i in range(space_output.SpaceObjectsLength()):
         lat.append(space_output.SpaceObjects(i).Surface(j).Latitude())
         long.append(space_output.SpaceObjects(i).Surface(j).Longitude())
         elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
-    outputGalaxy.initializeObject(id, distance, lat, long, elev)
+    outputGalaxy.initialize_object(id, distance, lat, long, elev)
 
 # Reconstruct surface points
 import matplotlib.pyplot as plt
