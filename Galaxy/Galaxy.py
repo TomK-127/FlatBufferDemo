@@ -3,31 +3,33 @@ import numpy as np
 
 class Galaxy:
     def __init__(self):
-        # Create member variables
         self.objects = []
         self.numOjbects = 0
 
-    def createObject(self, id, distance, x, y, z):
+    def initializeObject(self, id, distance, x, y, z):
         self.numOjbects += 1
-        NewSpaceObjct = SpaceObjct(id, distance, x, y, z)
-        self.objects.append(NewSpaceObjct)
+        newSpaceObject = SpaceObject(id, distance)
+        newSpaceObject.addSurface(x, y, z)
+        self.objects.append(newSpaceObject)
 
     def generateObject(self, numPoints):
-        # x, y, z = self.split_sphere()
         self.numOjbects += 1
         distance = 45
-        NewSpaceObjct = SpaceObjct(self.numOjbects, distance, [], [], [])
-        self.objects.append(NewSpaceObjct)
+        newSpaceObject = SpaceObject(self.numOjbects, distance)
+        newSpaceObject.generateSurface()
+        self.objects.append(newSpaceObject)
 
 
-class SpaceObjct:
-    def __init__(self, objId, distance, x, y, z):
+class SpaceObject:
+    def __init__(self, objId, distance):
         self.objId = objId
         self.distance = distance
-        if x:
-            self.x, self.y, self.z = x, y, z
-        else:
-            self.x, self.y, self.z = self.split_sphere()
+
+    def generateSurface(self):
+        self.x, self.y, self.z = self.split_sphere()
+
+    def addSurface(self, x, y, z):
+        self.x, self.y, self.z = np.array(x), np.array(y), np.array(z)
 
     # Generate coordinates for a sphere
     # https://stackoverflow.com/questions/73825731/how-to-generate-points-on-spherical-surface-making-equal-parts

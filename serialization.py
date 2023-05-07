@@ -72,7 +72,7 @@ for i in range(space_output.SpaceObjectsLength()):
         lat.append(space_output.SpaceObjects(i).Surface(j).Latitude())
         long.append(space_output.SpaceObjects(i).Surface(j).Longitude())
         elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
-    outputGalaxy.createObject(id, distance, lat, long, elev)
+    outputGalaxy.initializeObject(id, distance, lat, long, elev)
 
 # Reconstruct surface points
 import matplotlib.pyplot as plt
