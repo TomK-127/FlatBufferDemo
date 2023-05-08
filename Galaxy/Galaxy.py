@@ -1,5 +1,5 @@
 import numpy as np
-import random
+import matplotlib.pyplot as plt
 
 
 class Galaxy:
@@ -21,6 +21,20 @@ class Galaxy:
         space_object = SpaceObject(self.num_objects)
         space_object.generate_object_data()
         self.objects.append(space_object)
+
+    def generate_mock_objects(self, size):
+        for i in range(0, size):
+            self.generate_object()
+
+    def visualize_galaxy(self):
+        print(f"number of objects: {self.num_objects} ")
+        # Reconstruct surface points
+
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        for i in range(0, self.num_objects):
+            ax.scatter(self.objects[i].x, self.objects[i].y, self.objects[i].z)
+        plt.show()
 
 
 class SpaceObject:

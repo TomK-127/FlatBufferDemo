@@ -1,12 +1,15 @@
-import serialization
+from SpaceEncoder import *
 
 
 def main():
-    input_galaxy = serialization.generate_mock_galaxy(10)
-    serialization.serialize(input_galaxy)
+    input_galaxy = Galaxy.Galaxy()
+    input_galaxy.generate_mock_objects(10)
+    file_name = 'space.bin'
 
-    output_galaxy = serialization.deserialize()
-    serialization.visualize_galaxy(output_galaxy)
+    SpaceEncoder.serialize(input_galaxy, file_name)
+
+    output_galaxy = SpaceEncoder.deserialize(file_name)
+    output_galaxy.visualize_galaxy()
 
 
 if __name__ == "__main__":
