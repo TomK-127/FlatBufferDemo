@@ -1,12 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from .space_object import SpaceObject
+from .solar_system import SolarSystem
 
 
 class Galaxy:
     def __init__(self):
         self.objects = []
         self.num_objects = 0
+        # self.solar_systems = []
+        # self.num_systems = 0
 
     # create a space object and initialize it based on input parameters
     def initialize_object(self, obj_id, distance, x, y, z):
@@ -26,6 +29,11 @@ class Galaxy:
     def generate_mock_objects(self, size):
         for i in range(0, size):
             self.generate_object()
+
+    # def generate_solar_systems(self, size):
+    #     for i in range(0, size):
+    #         self.num_systems += 1
+    #         self.solar_systems.append(SolarSystem(self.num_systems))
 
     def visualize_galaxy(self):
         print(f"number of objects: {self.num_objects} ")
