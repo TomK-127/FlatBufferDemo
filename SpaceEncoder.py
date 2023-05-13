@@ -1,7 +1,6 @@
 import flatbuffers
 from SpaceMap import SpaceObject, SurfacePoint, Space
-from Galaxy import Galaxy
-import numpy as np
+from Galaxy.galaxy import Galaxy
 
 
 class SpaceEncoder:
@@ -68,7 +67,7 @@ class SpaceEncoder:
         space_output = Space.Space.GetRootAsSpace(buf, 0)
 
         # Reconstruct space objects
-        output_galaxy = Galaxy.Galaxy()
+        output_galaxy = Galaxy()
         for i in range(space_output.SpaceObjectsLength()):
             object_id = space_output.SpaceObjects(i).Id()
             distance = space_output.SpaceObjects(i).Distance()
@@ -79,6 +78,7 @@ class SpaceEncoder:
                 lat.append(space_output.SpaceObjects(i).Surface(j).Latitude())
                 long.append(space_output.SpaceObjects(i).Surface(j).Longitude())
                 elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
+            # space_object = SpaceObject(object_id)
             output_galaxy.initialize_object(object_id, distance, lat, long, elev)
 
         return output_galaxy
