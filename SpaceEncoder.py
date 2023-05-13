@@ -1,6 +1,8 @@
 import flatbuffers
 from SpaceMap import SpaceObject, SurfacePoint, Space
 from Galaxy.galaxy import Galaxy
+from Galaxy.solar_system import SolarSystem
+from Galaxy import space_object
 
 
 class SpaceEncoder:
@@ -25,13 +27,13 @@ class SpaceEncoder:
     @staticmethod
     def serialize_space_objects(builder, galaxy):
         space_objects = []
-        for space_object in galaxy.objects:
-            SpaceEncoder.serialize_space_object(builder, space_object, space_objects)
+        for system_object in galaxy.solar_systems[0].objects:
+            SpaceEncoder.serialize_space_object(builder, system_object, space_objects)
 
         # Serialize space objects into vector
         Space.StartSpaceObjectsVector(builder, len(space_objects))
-        for space_object in reversed(space_objects):
-            builder.PrependUOffsetTRelative(space_object)
+        for system_object in reversed(space_objects):
+            builder.PrependUOffsetTRelative(system_object)
         return builder.EndVector(len(space_objects))
 
     @staticmethod
@@ -68,6 +70,8 @@ class SpaceEncoder:
 
         # Reconstruct space objects
         output_galaxy = Galaxy()
+        solar_system1 = SolarSystem(1)
+        output_galaxy.add_solar_system(solar_system1)
         for i in range(space_output.SpaceObjectsLength()):
             object_id = space_output.SpaceObjects(i).Id()
             distance = space_output.SpaceObjects(i).Distance()
@@ -78,7 +82,9 @@ class SpaceEncoder:
                 lat.append(space_output.SpaceObjects(i).Surface(j).Latitude())
                 long.append(space_output.SpaceObjects(i).Surface(j).Longitude())
                 elev.append(space_output.SpaceObjects(i).Surface(j).Elevation())
-            # space_object = SpaceObject(object_id)
-            output_galaxy.initialize_object(object_id, distance, lat, long, elev)
+            new_space_object = space_object.SpaceObject(object_id)
+            new_space_object.add_surface(lat, long, elev)
+            new_space_object.add_distance(distance)
+            output_galaxy.solar_systems[0].add_space_object(new_space_object)
 
         return output_galaxy
