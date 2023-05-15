@@ -12,24 +12,38 @@ class GalaxyEncoder:
         # builder = flatbuffers.Builder(1024)
         builder = flatbuffers.Builder(0)
 
-        # Turn into loop per solar system
-        space_objects = GalaxyEncoder.serialize_space_objects(builder, input_galaxy.solar_systems[0])
-
         # Create Galaxy
-        solar_systems = []
-        SolarSystem.SolarSystemStart(builder)
-        space_objects = GalaxyEncoder.serialize_solar_system(builder, input_galaxy.solar_systems[0])
-        SolarSystem.AddSpaceObjects(builder, space_objects)
-        enc_solar_system = SolarSystem.End(builder)
-
-        ##
+        solar_systems = GalaxyEncoder.serialize_solar_systems(builder, input_galaxy)
 
         Galaxy.GalaxyStart(builder)
-        # Finish building the FlatBuffers object and write it to a file
+        Galaxy.AddSolarSystems(builder, solar_systems)
+        enc_solar_system = SolarSystem.End(builder)
+
         builder.Finish(enc_solar_system)
         buf = builder.Output()
         with open(file_name, 'wb') as f:
             f.write(buf)
+
+    @staticmethod
+    def serialize_solar_systems(builder, input_galaxy):
+        solar_systems = []
+
+        for input_solar_system in input_galaxy.solar_systems:
+            GalaxyEncoder.serialize_solar_system(builder, input_solar_system, solar_systems)
+
+        # Serialize solar systems into vector
+        Galaxy.StartSolarSystemsVector(builder, len(solar_systems))
+        for input_solar_system in reversed(solar_systems):
+            builder.PrependUOffsetTRelative(input_solar_system)
+        return builder.EndVector(len(solar_systems))
+
+    @staticmethod
+    def serialize_solar_system(builder, input_solar_system, solar_systems):
+        space_objects = GalaxyEncoder.serialize_space_objects(builder, input_solar_system)
+
+        SolarSystem.SolarSystemStart(builder)
+        SolarSystem.AddSpaceObjects(builder, space_objects)
+        solar_systems.append(SolarSystem.End(builder))
 
     @staticmethod
     def serialize_space_objects(builder, input_solar_system):
@@ -77,6 +91,7 @@ class GalaxyEncoder:
 
         # Reconstruct space objects
         output_galaxy = galaxy.Galaxy()
+        output_galaxy.add_solar_system(solar_system.SolarSystem(1))
         solar_system1 = input_galaxy.SolarSystems(0)
         # output_galaxy.add_solar_system(solar_system1)
         for i in range(solar_system1.SpaceObjectsLength()):
