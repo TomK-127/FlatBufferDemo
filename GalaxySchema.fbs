@@ -1,0 +1,23 @@
+namespace GalaxyMap;
+
+table SurfacePoint {
+  latitude: float;
+  longitude: float;
+  elevation: float;
+}
+
+table SpaceObject {
+  id: int;
+  surface: [SurfacePoint];
+  distance: float;
+}
+
+table SolarSystem {
+  space_objects: [SpaceObject];
+}
+
+table Galaxy {
+  solar_systems: [SolarSystem];
+}
+
+root_type Galaxy;
