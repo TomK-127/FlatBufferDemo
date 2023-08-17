@@ -99,23 +99,21 @@ class GalaxyEncoder:
 
         # Reconstruct space objects
         output_galaxy = galaxy.Galaxy()
-        output_galaxy.add_solar_system(solar_system.SolarSystem(1))
-        solar_system1 = input_galaxy.SolarSystems(0)
-        # output_galaxy.add_solar_system(solar_system1)
-        for i in range(solar_system1.SpaceObjectsLength()):
-            input_space_object = solar_system1.SpaceObjects(i)
-            object_id = input_space_object.Id()
-            distance = input_space_object.Distance()
-            lat = []
-            long = []
-            elev = []
-            for j in range(input_space_object.SurfaceLength()):
-                lat.append(input_space_object.Surface(j).Latitude())
-                long.append(input_space_object.Surface(j).Longitude())
-                elev.append(input_space_object.Surface(j).Elevation())
-            new_space_object = space_object.SpaceObject(object_id)
-            new_space_object.add_surface(lat, long, elev)
-            new_space_object.add_distance(distance)
-            output_galaxy.solar_systems[0].add_space_object(new_space_object)
-
+        for i in range(input_galaxy.SolarSystemsLength()):
+            input_solar_system = input_galaxy.SolarSystems(i)
+            output_solar_system = solar_system.SolarSystem(5)
+            for j in range(input_solar_system.SpaceObjectsLength()):
+                input_space_object = input_solar_system.SpaceObjects(j)
+                object_id = input_space_object.Id()
+                distance = input_space_object.Distance()
+                lat, long, elev = [], [], []
+                for k in range(input_space_object.SurfaceLength()):
+                    lat.append(input_space_object.Surface(k).Latitude())
+                    long.append(input_space_object.Surface(k).Longitude())
+                    elev.append(input_space_object.Surface(k).Elevation())
+                new_space_object = space_object.SpaceObject(object_id)
+                new_space_object.add_surface(lat, long, elev)
+                new_space_object.add_distance(distance)
+                output_solar_system.add_space_object(new_space_object)
+            output_galaxy.add_solar_system(output_solar_system)
         return output_galaxy

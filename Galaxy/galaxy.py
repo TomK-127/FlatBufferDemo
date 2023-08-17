@@ -16,7 +16,7 @@ class Galaxy:
         for i in range(0, size):
             self.num_systems += 1
             new_solar_system = SolarSystem(self.num_systems)
-            new_solar_system.generate_mock_objects(10)
+            new_solar_system.generate_mock_objects(self.num_systems)
             self.solar_systems.append(new_solar_system)
 
 
