@@ -19,12 +19,8 @@ class SolarSystem:
         self.num_objects += 1
         self.objects.append(space_object)
 
-    def visualize_solar_system(self):
+    def visualize_solar_system(self, axes):
         print(f"number of objects: {self.num_objects} ")
         # Reconstruct surface points
-
-        fig = plt.figure()
-        ax = fig.add_subplot(projection='3d')
         for i in range(0, self.num_objects):
-            ax.scatter(self.objects[i].x, self.objects[i].y, self.objects[i].z)
-        plt.show()
+            axes.scatter(self.objects[i].x, self.objects[i].y, self.objects[i].z)
