@@ -63,21 +63,38 @@ class SpaceObject(object):
             return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
         return 0.0
 
-def SpaceObjectStart(builder): builder.StartObject(3)
+def SpaceObjectStart(builder):
+    builder.StartObject(3)
+
 def Start(builder):
-    return SpaceObjectStart(builder)
-def SpaceObjectAddId(builder, id): builder.PrependInt32Slot(0, id, 0)
+    SpaceObjectStart(builder)
+
+def SpaceObjectAddId(builder, id):
+    builder.PrependInt32Slot(0, id, 0)
+
 def AddId(builder, id):
-    return SpaceObjectAddId(builder, id)
-def SpaceObjectAddSurface(builder, surface): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(surface), 0)
+    SpaceObjectAddId(builder, id)
+
+def SpaceObjectAddSurface(builder, surface):
+    builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(surface), 0)
+
 def AddSurface(builder, surface):
-    return SpaceObjectAddSurface(builder, surface)
-def SpaceObjectStartSurfaceVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def StartSurfaceVector(builder, numElems):
+    SpaceObjectAddSurface(builder, surface)
+
+def SpaceObjectStartSurfaceVector(builder, numElems):
+    return builder.StartVector(4, numElems, 4)
+
+def StartSurfaceVector(builder, numElems: int) -> int:
     return SpaceObjectStartSurfaceVector(builder, numElems)
-def SpaceObjectAddDistance(builder, distance): builder.PrependFloat32Slot(2, distance, 0.0)
+
+def SpaceObjectAddDistance(builder, distance):
+    builder.PrependFloat32Slot(2, distance, 0.0)
+
 def AddDistance(builder, distance):
-    return SpaceObjectAddDistance(builder, distance)
-def SpaceObjectEnd(builder): return builder.EndObject()
+    SpaceObjectAddDistance(builder, distance)
+
+def SpaceObjectEnd(builder):
+    return builder.EndObject()
+
 def End(builder):
     return SpaceObjectEnd(builder)

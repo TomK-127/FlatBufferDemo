@@ -25,8 +25,15 @@ class SolarSystem(object):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # SolarSystem
-    def SpaceObjects(self, j):
+    def Id(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
+        return 0
+
+    # SolarSystem
+    def SpaceObjects(self, j):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             x = self._tab.Vector(o)
             x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
@@ -39,25 +46,42 @@ class SolarSystem(object):
 
     # SolarSystem
     def SpaceObjectsLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # SolarSystem
     def SpaceObjectsIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         return o == 0
 
-def SolarSystemStart(builder): builder.StartObject(1)
+def SolarSystemStart(builder):
+    builder.StartObject(2)
+
 def Start(builder):
-    return SolarSystemStart(builder)
-def SolarSystemAddSpaceObjects(builder, spaceObjects): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(spaceObjects), 0)
+    SolarSystemStart(builder)
+
+def SolarSystemAddId(builder, id):
+    builder.PrependInt32Slot(0, id, 0)
+
+def AddId(builder, id):
+    SolarSystemAddId(builder, id)
+
+def SolarSystemAddSpaceObjects(builder, spaceObjects):
+    builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(spaceObjects), 0)
+
 def AddSpaceObjects(builder, spaceObjects):
-    return SolarSystemAddSpaceObjects(builder, spaceObjects)
-def SolarSystemStartSpaceObjectsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def StartSpaceObjectsVector(builder, numElems):
+    SolarSystemAddSpaceObjects(builder, spaceObjects)
+
+def SolarSystemStartSpaceObjectsVector(builder, numElems):
+    return builder.StartVector(4, numElems, 4)
+
+def StartSpaceObjectsVector(builder, numElems: int) -> int:
     return SolarSystemStartSpaceObjectsVector(builder, numElems)
-def SolarSystemEnd(builder): return builder.EndObject()
+
+def SolarSystemEnd(builder):
+    return builder.EndObject()
+
 def End(builder):
     return SolarSystemEnd(builder)

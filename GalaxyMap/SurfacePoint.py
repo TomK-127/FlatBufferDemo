@@ -45,18 +45,32 @@ class SurfacePoint(object):
             return self._tab.Get(flatbuffers.number_types.Float32Flags, o + self._tab.Pos)
         return 0.0
 
-def SurfacePointStart(builder): builder.StartObject(3)
+def SurfacePointStart(builder):
+    builder.StartObject(3)
+
 def Start(builder):
-    return SurfacePointStart(builder)
-def SurfacePointAddLatitude(builder, latitude): builder.PrependFloat32Slot(0, latitude, 0.0)
+    SurfacePointStart(builder)
+
+def SurfacePointAddLatitude(builder, latitude):
+    builder.PrependFloat32Slot(0, latitude, 0.0)
+
 def AddLatitude(builder, latitude):
-    return SurfacePointAddLatitude(builder, latitude)
-def SurfacePointAddLongitude(builder, longitude): builder.PrependFloat32Slot(1, longitude, 0.0)
+    SurfacePointAddLatitude(builder, latitude)
+
+def SurfacePointAddLongitude(builder, longitude):
+    builder.PrependFloat32Slot(1, longitude, 0.0)
+
 def AddLongitude(builder, longitude):
-    return SurfacePointAddLongitude(builder, longitude)
-def SurfacePointAddElevation(builder, elevation): builder.PrependFloat32Slot(2, elevation, 0.0)
+    SurfacePointAddLongitude(builder, longitude)
+
+def SurfacePointAddElevation(builder, elevation):
+    builder.PrependFloat32Slot(2, elevation, 0.0)
+
 def AddElevation(builder, elevation):
-    return SurfacePointAddElevation(builder, elevation)
-def SurfacePointEnd(builder): return builder.EndObject()
+    SurfacePointAddElevation(builder, elevation)
+
+def SurfacePointEnd(builder):
+    return builder.EndObject()
+
 def End(builder):
     return SurfacePointEnd(builder)

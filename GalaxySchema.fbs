@@ -13,6 +13,7 @@ table SpaceObject {
 }
 
 table SolarSystem {
+  id: int;
   space_objects: [SpaceObject];
 }
 

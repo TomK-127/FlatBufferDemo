@@ -49,15 +49,26 @@ class Galaxy(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def GalaxyStart(builder): builder.StartObject(1)
+def GalaxyStart(builder):
+    builder.StartObject(1)
+
 def Start(builder):
-    return GalaxyStart(builder)
-def GalaxyAddSolarSystems(builder, solarSystems): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(solarSystems), 0)
+    GalaxyStart(builder)
+
+def GalaxyAddSolarSystems(builder, solarSystems):
+    builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(solarSystems), 0)
+
 def AddSolarSystems(builder, solarSystems):
-    return GalaxyAddSolarSystems(builder, solarSystems)
-def GalaxyStartSolarSystemsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def StartSolarSystemsVector(builder, numElems):
+    GalaxyAddSolarSystems(builder, solarSystems)
+
+def GalaxyStartSolarSystemsVector(builder, numElems):
+    return builder.StartVector(4, numElems, 4)
+
+def StartSolarSystemsVector(builder, numElems: int) -> int:
     return GalaxyStartSolarSystemsVector(builder, numElems)
-def GalaxyEnd(builder): return builder.EndObject()
+
+def GalaxyEnd(builder):
+    return builder.EndObject()
+
 def End(builder):
     return GalaxyEnd(builder)
