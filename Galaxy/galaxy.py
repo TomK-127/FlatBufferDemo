@@ -23,14 +23,14 @@ class Galaxy:
     def visualize_galaxy(self):
         nrows = int(np.sqrt(self.num_systems))
         ncols = int(np.sqrt(self.num_systems))
-        fig, axes = plt.subplots(nrows, ncols, subplot_kw={'projection': '3d'}, figsize=(10, 8))
+        fig, axes = plt.subplots(nrows, ncols, subplot_kw={'projection': '3d'}, figsize=(18, 9))
         num_subplots = len(axes.flatten())
         for i, ax in zip(range(num_subplots), axes.flatten()):
             if i < self.num_systems:
                 solar_system = self.solar_systems[i]
                 
                 # Call sub-function for visualizing the solar system passing the current axes
-                ax.set_title(f'Subplot {i+1}')
+                ax.set_title(f'Solar System: {solar_system.system_id}')
                 solar_system.visualize_solar_system(ax)
 
         plt.show()

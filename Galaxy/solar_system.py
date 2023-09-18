@@ -20,7 +20,7 @@ class SolarSystem:
         self.objects.append(space_object)
 
     def visualize_solar_system(self, axes):
-        print(f"number of objects: {self.num_objects} ")
+        print(f"Solar system id: {self.system_id}, number of objects: {self.num_objects} ")
         # Reconstruct surface points
         for i in range(0, self.num_objects):
             axes.scatter(self.objects[i].x, self.objects[i].y, self.objects[i].z)
