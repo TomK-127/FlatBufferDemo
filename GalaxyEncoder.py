@@ -17,7 +17,6 @@ class GalaxyEncoder:
 
         Galaxy.GalaxyStart(builder)
         Galaxy.AddSolarSystems(builder, solar_systems)
-        enc_solar_system = SolarSystem.End(builder)
 
         builder.Finish(serialized_galaxy)
         buf = builder.Output()
@@ -50,6 +49,7 @@ class GalaxyEncoder:
         space_objects = GalaxyEncoder.serialize_space_objects(builder, input_solar_system.objects)
 
         SolarSystem.SolarSystemStart(builder)
+        SolarSystem.AddId(builder, input_solar_system.system_id)
         SolarSystem.AddSpaceObjects(builder, space_objects)
         return SolarSystem.End(builder)
 
@@ -101,7 +101,7 @@ class GalaxyEncoder:
         output_galaxy = galaxy.Galaxy()
         for i in range(input_galaxy.SolarSystemsLength()):
             input_solar_system = input_galaxy.SolarSystems(i)
-            output_solar_system = solar_system.SolarSystem(5)
+            output_solar_system = solar_system.SolarSystem(input_solar_system.Id())
             for j in range(input_solar_system.SpaceObjectsLength()):
                 input_space_object = input_solar_system.SpaceObjects(j)
                 object_id = input_space_object.Id()
