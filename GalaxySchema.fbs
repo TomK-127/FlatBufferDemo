@@ -1,4 +1,4 @@
-namespace GalaxyMap;
+namespace GalaxySchema;
 
 table SurfacePoint {
   latitude: float;

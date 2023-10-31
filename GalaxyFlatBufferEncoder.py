@@ -1,5 +1,5 @@
 import flatbuffers
-from GalaxyMap import Galaxy, SolarSystem, SpaceObject, SurfacePoint
+from GalaxySchema import Galaxy, SolarSystem, SpaceObject, SurfacePoint
 from Galaxy import galaxy
 from Galaxy import solar_system
 from Galaxy import space_object
