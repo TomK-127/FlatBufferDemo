@@ -1,7 +1,7 @@
 # FlatBuffer Library Demonstration
 
 ## Purpose
-  Demonstrate encoding of data through the FlatBuffer library in Python, and compare performance to a basic serialization method like JSON.
+  Demonstrate encoding of data through the [FlatBuffer library](https://github.com/google/flatbuffers) in Python, and compare performance to a basic serialization method like JSON.
 
 ## Usage (Linux)
 * Running `python main.py` from the root of this repository creates mock data of a galaxy, and then encodes/decodes it using the FlatBuffer library and through JSON
