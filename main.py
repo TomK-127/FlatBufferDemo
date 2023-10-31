@@ -14,7 +14,7 @@ def main():
 
     # Generate mock galaxy with mock solar systems
     input_galaxy = Galaxy()
-    input_galaxy.generate_solar_systems(16)
+    input_galaxy.generate_solar_systems(9)
 
     file_name_json = 'output/galaxy.json'
     file_name_flat_buffer = 'output/galaxy.bin'
