@@ -14,10 +14,10 @@ class Galaxy:
         self.num_systems += 1
 
     def generate_solar_systems(self, size):
+        self.num_systems = size
         for i in range(0, size):
-            self.num_systems += 1
-            new_solar_system = SolarSystem(self.num_systems)
-            new_solar_system.generate_mock_objects(self.num_systems)
+            new_solar_system = SolarSystem(i + 1)
+            new_solar_system.generate_mock_objects(16)
             self.solar_systems.append(new_solar_system)
 
     def visualize_galaxy(self):

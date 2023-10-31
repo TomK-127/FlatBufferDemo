@@ -1,19 +1,18 @@
 import flatbuffers
-# from SpaceMap import SpaceObject, SurfacePoint, Space
 from GalaxyMap import Galaxy, SolarSystem, SpaceObject, SurfacePoint
 from Galaxy import galaxy
 from Galaxy import solar_system
 from Galaxy import space_object
 
 
-class GalaxyEncoder:
+class GalaxyFlatBufferEncoder:
     @staticmethod
     def serialize(input_galaxy, file_name):
         # builder = flatbuffers.Builder(1024)
         builder = flatbuffers.Builder(0)
 
-        serialized_galaxy = GalaxyEncoder.serialize_galaxy(builder, input_galaxy)
-        solar_systems = GalaxyEncoder.serialize_solar_systems(builder, input_galaxy)
+        serialized_galaxy = GalaxyFlatBufferEncoder.serialize_galaxy(builder, input_galaxy)
+        solar_systems = GalaxyFlatBufferEncoder.serialize_solar_systems(builder, input_galaxy)
 
         Galaxy.GalaxyStart(builder)
         Galaxy.AddSolarSystems(builder, solar_systems)
@@ -25,7 +24,7 @@ class GalaxyEncoder:
 
     @staticmethod
     def serialize_galaxy(builder, input_galaxy):
-        solar_systems = GalaxyEncoder.serialize_solar_systems(builder, input_galaxy)
+        solar_systems = GalaxyFlatBufferEncoder.serialize_solar_systems(builder, input_galaxy)
 
         Galaxy.GalaxyStart(builder)
         Galaxy.AddSolarSystems(builder, solar_systems)
@@ -36,7 +35,7 @@ class GalaxyEncoder:
         solar_systems = []
 
         for input_solar_system in input_galaxy.solar_systems:
-            solar_systems.append(GalaxyEncoder.serialize_solar_system(builder, input_solar_system))
+            solar_systems.append(GalaxyFlatBufferEncoder.serialize_solar_system(builder, input_solar_system))
 
         # Turn into vector to be stored in a galaxy
         Galaxy.StartSolarSystemsVector(builder, len(solar_systems))
@@ -46,7 +45,7 @@ class GalaxyEncoder:
 
     @staticmethod
     def serialize_solar_system(builder, input_solar_system):
-        space_objects = GalaxyEncoder.serialize_space_objects(builder, input_solar_system.objects)
+        space_objects = GalaxyFlatBufferEncoder.serialize_space_objects(builder, input_solar_system.objects)
 
         SolarSystem.SolarSystemStart(builder)
         SolarSystem.AddId(builder, input_solar_system.system_id)
@@ -57,7 +56,7 @@ class GalaxyEncoder:
     def serialize_space_objects(builder, input_space_objects):
         space_objects = []
         for system_object in input_space_objects:
-            space_objects.append(GalaxyEncoder.serialize_space_object(builder, system_object))
+            space_objects.append(GalaxyFlatBufferEncoder.serialize_space_object(builder, system_object))
 
         # Serialize space objects into vector
         SolarSystem.StartSpaceObjectsVector(builder, len(space_objects))
